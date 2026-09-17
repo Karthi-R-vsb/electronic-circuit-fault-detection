@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CircuitDX — Electronic Circuit Fault Detection &amp; Diagnosis System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ============ TOP NAVIGATION ============ -->
+<header class="topbar">
+  <div class="brand" data-nav="dashboard">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 12h4l2-7 4 14 2-7h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span>
+      <span class="brand-text">Circuit<span class="brand-accent">DX</span></span>
+      <small class="brand-subtitle">ELECTRONICS DIAGNOSTICS</small>
+    </span>
+  </div>
+
+  <nav class="mainnav" aria-label="Primary">
+    <button class="navlink active" data-nav="dashboard">Home</button>
+    <button class="navlink" data-nav="circuits">Circuits</button>
+    <button class="navlink" data-nav="diagnosis" data-requires-circuit="true">Diagnosis</button>
+    <button class="navlink" data-nav="history">History</button>
+    <button class="navlink" data-nav="learn">Learn</button>
+    <button class="navlink" data-nav="about">About</button>
+  </nav>
+
+  <div class="system-status"><span class="status-live-dot"></span> ENGINE ONLINE</div>
+  <div class="topbar-actions">
+    <button id="themeToggle" class="icon-btn" title="Toggle light / dark mode" aria-label="Toggle theme">
+      <svg id="themeIconMoon" viewBox="0 0 24 24" width="18" height="18"><path d="M21 12.6A9 9 0 1 1 11.4 3a7 7 0 0 0 9.6 9.6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg id="themeIconSun" viewBox="0 0 24 24" width="18" height="18" style="display:none"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <button id="mobileNavToggle" class="icon-btn mobile-only" aria-label="Open menu">
+    <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+</header>
+
+<div id="mobileNavPanel" class="mobile-nav-panel" hidden>
+  <button class="navlink" data-nav="dashboard">Home</button>
+  <button class="navlink" data-nav="circuits">Circuits</button>
+  <button class="navlink" data-nav="diagnosis" data-requires-circuit="true">Diagnosis</button>
+  <button class="navlink" data-nav="history">History</button>
+  <button class="navlink" data-nav="learn">Learn</button>
+  <button class="navlink" data-nav="about">About</button>
+</div>
+
+<main id="app">
+
+  <!-- ============ DASHBOARD ============ -->
+  <section id="section-dashboard" class="view active">
+    <div class="hero panel">
+      <div class="hero-readout" aria-hidden="true">
+        <div class="readout-row">
+          <span class="readout-label">V<sub>OUT</sub></span>
+          <span class="readout-value" id="heroReadoutVal">0.00</span>
+          <span class="readout-unit">V</span>
+        </div>
+        <div class="readout-bars">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="readout-caption">DIAGNOSTIC CHANNEL — STANDBY</div>
+      </div>
+      <div class="hero-copy">
+        <h1>Find the fault before you touch the board.</h1>
+        <p>CircuitDX is a rule-based troubleshooting assistant for common electronic circuits. Enter what your multimeter reads, and it narrows down what's most likely wrong — with reasoning you can check against your own textbook.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-nav="circuits">Start Diagnosis</button>
+          <button class="btn btn-ghost" id="howItWorksBtn">How it works</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><strong id="statCircuits">8</strong><span>supported circuits</span></div>
+          <div class="stat"><strong id="statFaults">0</strong><span>diagnosable faults</span></div>
+          <div class="stat"><strong>0</strong><span>servers required</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-strip">
+      <div class="strip-item">
+        <span class="strip-icon">⚡</span>
+        <div><strong>Rule-based analysis</strong><small>Explainable fault matching</small></div>
+      </div>
+      <div class="strip-item">
+        <span class="strip-icon">◉</span>
+        <div><strong>Offline first</strong><small>No server or API required</small></div>
+      </div>
+      <div class="strip-item">
+        <span class="strip-icon">⌁</span>
+        <div><strong>Student focused</strong><small>Learn while you diagnose</small></div>
+      </div>
+    </div>
+
+    <div class="section-heading-inline">
+      <div><span class="eyebrow">WORKFLOW</span><h2>From measurement to diagnosis</h2></div>
+      <span class="engine-chip">● REAL-TIME UI</span>
+    </div>
+    <div class="workflow-grid">
+      <div class="workflow-card"><span>01</span><strong>Select circuit</strong><p>Choose a circuit from the diagnostic library.</p></div>
+      <div class="workflow-card"><span>02</span><strong>Enter readings</strong><p>Provide values measured with your test equipment.</p></div>
+      <div class="workflow-card"><span>03</span><strong>Analyze symptoms</strong><p>The engine compares readings with expected ranges.</p></div>
+      <div class="workflow-card"><span>04</span><strong>Inspect causes</strong><p>Review ranked faults and troubleshooting steps.</p></div>
+    </div>
+
+    <div id="howItWorks" class="panel how-it-works" hidden>
+      <h2>How it works</h2>
+      <ol>
+        <li><strong>Pick a circuit.</strong> Choose the circuit you built or are studying from the circuit library.</li>
+        <li><strong>Enter your readings.</strong> Type in what your multimeter or scope actually measured at each test point.</li>
+        <li><strong>Compare against expected values.</strong> Each measurement is checked against the textbook-expected range for that circuit.</li>
+        <li><strong>Score the likely faults.</strong> A rule-based engine matches your symptoms against known fault patterns and ranks the top 3 candidates by confidence.</li>
+        <li><strong>Read the reasoning.</strong> You get possible causes and numbered troubleshooting steps — not just a verdict.</li>
+      </ol>
+      <p class="disclaimer">CircuitDX is an educational estimation tool. It cannot physically test a component — treat every result as "most likely," not "confirmed."</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Recent diagnoses</h2>
+        <button class="btn btn-text" id="clearHistoryBtnDash">Clear history</button>
+      </div>
+      <div id="dashboardHistory" class="history-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ CIRCUIT SELECTION ============ -->
+  <section id="section-circuits" class="view">
+    <div class="view-header">
+      <h1>Circuit library</h1>
+      <p>Select a circuit, enter measured values, and let the diagnostic engine narrow down the likely fault.</p>
+      <div class="library-meta"><span>8 CIRCUITS</span><span>•</span><span>RULE-BASED</span><span>•</span><span>OFFLINE</span></div>
+    </div>
+
+    <div class="search-row">
+      <svg viewBox="0 0 24 24" width="16" height="16" class="search-icon"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input type="text" id="circuitSearch" placeholder="Search circuits — LED, rectifier, 555, MOSFET…" autocomplete="off" />
+    </div>
+
+    <div id="circuitGrid" class="circuit-grid"></div>
+    <p id="noResultsMsg" class="empty-msg" hidden>No circuits match your search.</p>
+  </section>
+
+  <!-- ============ DIAGNOSIS ============ -->
+  <section id="section-diagnosis" class="view">
+    <div class="view-header">
+      <button class="btn btn-text back-btn" id="backToCircuits">&larr; Back to circuits</button>
+      <h1 id="diagCircuitName">Circuit</h1>
+      <p id="diagCircuitDesc"></p>
+    </div>
+
+    <div class="diag-grid">
+      <div class="panel">
+        <h2>Circuit reference</h2>
+        <div id="diagSchematic" class="schematic-box" aria-hidden="true"></div>
+        <div class="ref-row">
+          <span class="ref-label">Components</span>
+          <span id="diagComponents" class="ref-value"></span>
+        </div>
+        <div class="ref-row">
+          <span class="ref-label">Typical supply</span>
+          <span id="diagSupply" class="ref-value"></span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Enter measured values</h2>
+        <form id="measurementForm" novalidate></form>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" id="clearFormBtn">Clear</button>
+          <button type="button" class="btn btn-primary" id="diagnoseBtn">Diagnose</button>
+        </div>
+        <p id="formError" class="form-error" hidden></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="section-results" class="view">
+    <div class="view-header">
+      <button class="btn btn-text back-btn" id="backToDiagnosis">&larr; Back to measurements</button>
+      <h1>Diagnosis result</h1>
+    </div>
+
+    <div class="panel status-panel">
+      <div id="statusBadge" class="status-badge">
+        <span id="statusDot" class="status-dot"></span>
+        <span id="statusText">—</span>
+      </div>
+      <p id="statusSummary"></p>
+    </div>
+
+    <div class="panel">
+      <h2>Measured values</h2>
+      <div class="table-wrap">
+        <table class="data-table" id="measurementTable">
+          <thead><tr><th>Parameter</th><th>Expected</th><th>Measured</th><th>Status</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="faultsPanel" class="panel">
+      <h2>Most likely faults</h2>
+      <p class="disclaimer small">Percentages are the app's rule-based symptom-matching score, not laboratory certainty.</p>
+      <div class="diagnosis-summary-grid">
+          <div class="summary-mini"><span>ENGINE</span><strong>Rule-based</strong><small>Transparent scoring</small></div>
+          <div class="summary-mini"><span>CANDIDATES</span><strong>Top 3</strong><small>Ranked by symptom match</small></div>
+          <div class="summary-mini"><span>MODE</span><strong>Offline</strong><small>Data stays local</small></div>
+        </div>
+        <div id="faultList" class="fault-list"></div>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn btn-ghost" id="diagnoseAnotherBtn">Diagnose another circuit</button>
+      <button class="btn btn-primary" id="backToCircuitsFromResults">Circuit library</button>
+    </div>
+  </section>
+
+  <!-- ============ HISTORY ============ -->
+  <section id="section-history" class="view">
+    <div class="view-header">
+      <h1>Diagnosis history</h1>
+      <p>Stored locally in your browser — nothing leaves your device.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <h2>All diagnoses</h2>
+        <button class="btn btn-text" id="clearHistoryBtn">Clear history</button>
+      </div>
+      <div id="historyList" class="history-list"></div>
+      <p id="historyEmptyMsg" class="empty-msg" hidden>No diagnoses yet. Run one from the circuit library.</p>
+    </div>
+  </section>
+
+  <!-- ============ LEARN ============ -->
+  <section id="section-learn" class="view">
+    <div class="view-header">
+      <h1>Learn about each circuit</h1>
+      <p>Working principle, expected behavior, and common faults — a quick refresher before you diagnose.</p>
+    </div>
+    <div id="learnAccordion" class="accordion"></div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="section-about" class="view">
+    <div class="view-header">
+      <h1>About CircuitDX</h1>
+    </div>
+    <div class="panel about-panel">
+      <h2>Purpose</h2>
+      <p>CircuitDX is an educational software tool that helps electronics students understand circuit troubleshooting and identify possible faults using measured electrical values. It was built for coursework in electric circuit analysis and electronics, as a way to practice fault-finding logic without needing a lab bench on hand.</p>
+
+      <h2>Technologies</h2>
+      <p>HTML5, CSS3, and vanilla JavaScript only. No frameworks, build step, backend, database, or API key — open <code>index.html</code> and it runs.</p>
+
+      <div class="about-cols">
+        <div>
+          <h3>Advantages</h3>
+          <ul>
+            <li>Easy to use, no hardware required</li>
+            <li>Instant, offline diagnosis</li>
+            <li>Explains reasoning, not just a verdict</li>
+            <li>Helps build troubleshooting intuition</li>
+            <li>Works on desktop and mobile</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Limitations</h3>
+          <ul>
+            <li>Rule-based estimation, not a physical test</li>
+            <li>Cannot detect faults it has no rule for</li>
+            <li>Confidence scores are symptom-matching scores, not measured probabilities</li>
+            <li>Not a substitute for a multimeter, oscilloscope, or a qualified technician</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>Future enhancements</h2>
+      <p>AI-assisted diagnosis, real-time sensor input via Arduino/ESP32, oscilloscope waveform analysis, PCB image analysis, a mobile app, and cloud-synced diagnosis history.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <span>© CircuitDX • Educational Electronics Diagnostics</span>
+  <span>HTML • CSS • JavaScript</span>
+</footer>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="script.js"></script>
+</body>
+</html>
